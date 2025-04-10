@@ -20,6 +20,7 @@ let level = 1;
 let showLevelUp = false;
 let levelUpTimer = 0;
 const maxSpeed = 20; // Speed cap for the ball
+let levelUpSound = new Audio("https://cdn.pixabay.com/audio/2022/03/15/audio_34b3d4c8c1.mp3");
 
 // Gradual speed increase
 let speedIncreaseInterval = 15000; // milliseconds
@@ -31,6 +32,7 @@ setInterval(() => {
     level++;
     showLevelUp = true;
     levelUpTimer = Date.now();
+    levelUpSound.play();
   }
 }, speedIncreaseInterval);
 
@@ -78,8 +80,6 @@ function update() {
   // Ball falls below paddle (bottom wall)
   if (ball.y + ball.radius > canvas.height - 10) {
     gameOver = true;
-    alert("Game Over!");
-    document.location.reload();
   }
 
   // Prevent paddle from going off-screen
@@ -122,6 +122,36 @@ function draw() {
   } else {
     showLevelUp = false;
   }
+
+  // Draw level-up progress bar
+  const timeSinceLevel = Date.now() - levelUpTimer;
+  const progress = Math.min((timeSinceLevel % speedIncreaseInterval) / speedIncreaseInterval, 1);
+  const barWidth = 200;
+  const barHeight = 10;
+  const barX = canvas.width - barWidth - 20;
+  const barY = 20;
+  ctx.fillStyle = "#222";
+  ctx.fillRect(barX, barY, barWidth, barHeight);
+  ctx.fillStyle = "lime";
+  ctx.fillRect(barX, barY, barWidth * progress, barHeight);
+  ctx.strokeStyle = "white";
+  ctx.strokeRect(barX, barY, barWidth, barHeight);
+
+  // Game Over screen
+  if (gameOver) {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.font = "bold 60px Arial";
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2 - 30);
+
+    ctx.font = "bold 30px Arial";
+    ctx.fillStyle = "#ffcc00";
+    ctx.fillText(`Final Level: ${level}`, canvas.width / 2, canvas.height / 2 + 20);
+    ctx.fillText("Press R to Restart", canvas.width / 2, canvas.height / 2 + 60);
+  }
 }
 
 function loop() {
@@ -129,6 +159,12 @@ function loop() {
   draw();
   if (!gameOver) requestAnimationFrame(loop);
 }
+
+document.addEventListener("keydown", (e) => {
+  if (gameOver && e.key.toLowerCase() === "r") {
+    document.location.reload();
+  }
+});
 
 loop();
 
