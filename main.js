@@ -22,7 +22,7 @@ let levelUpTimer = 0;
 const maxSpeed = 20; // Speed cap for the ball
 
 // Gradual speed increase
-let speedIncreaseInterval = 10000; // milliseconds
+let speedIncreaseInterval = 15000; // milliseconds
 let speedMultiplier = 1.05;
 setInterval(() => {
   if (!gameOver) {
