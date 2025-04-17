@@ -23,7 +23,7 @@ const maxSpeed = 20; // Speed cap for the ball
 let levelUpSound = new Audio("https://cdn.pixabay.com/audio/2022/03/15/audio_34b3d4c8c1.mp3");
 
 // Gradual speed increase
-let speedIncreaseInterval = 15000; // milliseconds
+let speedIncreaseInterval = 3000; // milliseconds
 let speedMultiplier = 1.05;
 setInterval(() => {
   if (!gameOver) {
@@ -90,7 +90,13 @@ function update() {
 }
 
 function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // Background gradient
+  const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+  gradient.addColorStop(0, "#0f2027");
+  gradient.addColorStop(0.5, "#203a43");
+  gradient.addColorStop(1, "#2c5364");
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   // Draw walls (all sides)
   ctx.fillStyle = "#888";
@@ -110,7 +116,7 @@ function draw() {
   ctx.closePath();
 
   // Draw paddle
-  ctx.fillStyle = "blue";
+  ctx.fillStyle = "green";
   ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
 
   // Show level up message
@@ -167,5 +173,6 @@ document.addEventListener("keydown", (e) => {
 });
 
 loop();
+
 
 
